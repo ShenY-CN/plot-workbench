@@ -59,6 +59,65 @@
         "tzdata": "2026.5",
         "xlrd": "2.0.2"
       }
+    },
+    "macos-arm64": {
+      "kind": "macos-standalone",
+      "os": "macos",
+      "arch": "arm64",
+      "shipped": true,
+      "note": [
+        "python-build-standalone（astral-sh）的 install_only 发行版：可重定位的 CPython，",
+        "prefix 由解释器自身路径推导，因此挪进 .app 的 Resources 里照样工作。",
+        "官方 macOS 安装器装的是 /Library/Frameworks 下的固定路径，嵌不进 .app；",
+        "Homebrew/Conda 属于用户的环境，我们不碰。这一档是目前唯一既可重定位、",
+        "又能逐个 codesign + 公证、还能离线首渲的方案。",
+        "install_only（未 strip）而不是 install_only_stripped：两者只差 150 KiB，",
+        "留着符号表换崩溃报告可读。"
+      ],
+      "python": {
+        "version": "3.13.15",
+        "implementation": "cpython",
+        "release": "20260814",
+        "triple": "aarch64-apple-darwin",
+        "flavor": "install_only",
+        "url": "https://github.com/astral-sh/python-build-standalone/releases/download/20260814/cpython-3.13.15%2B20260814-aarch64-apple-darwin-install_only.tar.gz",
+        "sha256": "7d50bb42813a5644db7c40d3ad79361d0b724bb29d25a91fab1048c2c5c6a8c5",
+        "size": 25304407,
+        "archive_root": "python",
+        "checksums": "https://github.com/astral-sh/python-build-standalone/releases/download/20260814/SHA256SUMS",
+        "doc": "https://github.com/astral-sh/python-build-standalone"
+      },
+      "pip": {
+        "platforms": [
+          "macosx_11_0_arm64",
+          "macosx_12_0_arm64",
+          "macosx_13_0_arm64",
+          "macosx_14_0_arm64"
+        ],
+        "python_version": "3.13",
+        "implementation": "cp",
+        "abi": "cp313"
+      },
+      "packages": {
+        "contourpy": "1.4.0",
+        "cycler": "0.12.1",
+        "et_xmlfile": "2.0.0",
+        "fonttools": "4.67.0",
+        "kiwisolver": "1.5.1",
+        "matplotlib": "3.11.1",
+        "numpy": "2.5.2",
+        "openpyxl": "3.1.5",
+        "packaging": "26.3",
+        "pandas": "3.0.5",
+        "pillow": "12.3.0",
+        "pyparsing": "3.3.3",
+        "python-dateutil": "2.9.0.post0",
+        "scipy": "1.18.0",
+        "seaborn": "0.13.2",
+        "six": "1.17.0",
+        "tzdata": "2026.5",
+        "xlrd": "2.0.2"
+      }
     }
   }
 }

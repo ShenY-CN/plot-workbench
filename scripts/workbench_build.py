@@ -1,7 +1,7 @@
-"""Build the independent Windows installer, preserving upstream engine contracts.
+"""Build the independent desktop installer, preserving upstream engine contracts.
 
-Requires Python build dependencies, pnpm, Rust and the MSVC Windows SDK.
-The GitHub Actions windows-latest runner provides the native toolchain.
+Requires Python build dependencies, pnpm and Rust, plus the native Windows SDK
+or Apple Silicon macOS build tools.
 """
 
 from __future__ import annotations
@@ -10,6 +10,7 @@ import argparse
 import hashlib
 import json
 import os
+import platform
 import shutil
 import subprocess
 import sys
@@ -65,8 +66,8 @@ def main() -> None:
     parser.add_argument("--skip-tauri", action="store_true")
     parser.add_argument("--skip-frontend", action="store_true")
     args = parser.parse_args()
-    if sys.platform != "win32":
-        raise SystemExit("The Plot Workbench v1 installer is built on Windows x64.")
+    if sys.platform != "win32" and not (sys.platform == "darwin" and platform.machine() == "arm64"):
+        raise SystemExit("Build on Windows x64 or native Apple Silicon macOS.")
     os.environ["TAVOTTO_NO_TELEMETRY"] = "1"
     os.environ["TAVOTTO_NO_UPDATE_CHECK"] = "1"
     os.environ["TAVOTTO_REQUIRE_RUNTIME"] = "1"
@@ -82,28 +83,37 @@ def main() -> None:
     run([sys.executable, "scripts/fetch_fonts.py", "--check"])
     stage_private_python(False)
     run([sys.executable, "-m", "PyInstaller", "packaging/tavotto.spec", "--noconfirm"])
-    sidecar = ROOT / "dist" / "Tavotto" / "Tavotto.exe"
+    suffix = ".exe" if sys.platform == "win32" else ""
+    sidecar = ROOT / "dist" / "Tavotto" / f"Tavotto{suffix}"
     for item in (
         sidecar,
-        sidecar.parent / "tavotto-cli.exe",
-        sidecar.parent / "_internal" / "tavotto-workerd.exe",
+        sidecar.parent / f"tavotto-cli{suffix}",
+        sidecar.parent / "_internal" / f"tavotto-workerd{suffix}",
     ):
         if not item.is_file():
             raise SystemExit(f"Missing frozen artifact: {item}")
-    run([str(sidecar.parent / "tavotto-cli.exe"), "doctor", "--json"])
+    run([str(sidecar.parent / f"tavotto-cli{suffix}"), "doctor", "--json"])
     if args.skip_tauri:
         return
     pnpm = shutil.which("pnpm.cmd") or shutil.which("pnpm")
     if not pnpm:
         raise SystemExit("pnpm is missing")
-    run([pnpm, "dlx", "@tauri-apps/cli@2.11.4", "build", "--bundles", "nsis"])
-    installers = list((ROOT / "src-tauri/target/release/bundle/nsis").glob("*.exe"))
+    if sys.platform == "darwin":
+        bundle, extension = "app,dmg", ".dmg"
+        bundle_dir = ROOT / "src-tauri/target/release/bundle/dmg"
+        output_name = f"Plot-Workbench-{WORKBENCH_VERSION}-macOS-arm64.dmg"
+    else:
+        bundle, extension = "nsis", ".exe"
+        bundle_dir = ROOT / "src-tauri/target/release/bundle/nsis"
+        output_name = f"Plot-Workbench-{WORKBENCH_VERSION}-Windows-x64-Setup.exe"
+    run([pnpm, "dlx", "@tauri-apps/cli@2.11.4", "build", "--bundles", bundle])
+    installers = list(bundle_dir.glob(f"*{extension}"))
     if len(installers) != 1:
-        raise SystemExit(f"Expected one NSIS installer, found {len(installers)}")
-    out = ROOT / "dist" / f"Plot-Workbench-{WORKBENCH_VERSION}-Windows-x64-Setup.exe"
+        raise SystemExit(f"Expected one installer, found {len(installers)}")
+    out = ROOT / "dist" / output_name
     shutil.copy2(installers[0], out)
     digest = hashlib.sha256(out.read_bytes()).hexdigest()
-    out.with_suffix(".exe.sha256").write_text(f"{digest}  {out.name}\n", encoding="ascii")
+    out.with_name(out.name + ".sha256").write_text(f"{digest}  {out.name}\n", encoding="ascii")
     print(f"Installer: {out}\nSHA-256: {digest}")
 
 

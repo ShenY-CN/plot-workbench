@@ -76,3 +76,23 @@ def test_template_previews_are_bundled_as_application_data():
             assert (previews / key / f"figure.{extension}").is_file()
     spec_text = (ROOT / "packaging/tavotto.spec").read_text(encoding="utf-8")
     assert '"previews"' in spec_text
+
+
+def test_macos_runtime_lock_has_workbench_scientific_stack():
+    from build_worker_runtime import validate_lock
+
+    lock = json.loads((ROOT / "packaging/workbench-runtime-lock.json").read_text(encoding="utf-8"))
+    validate_lock(lock)
+    mac = lock["targets"]["macos-arm64"]
+    assert mac["shipped"] and mac["arch"] == "arm64"
+    assert mac["packages"] == lock["targets"]["windows-amd64"]["packages"]
+
+
+def test_macos_data_directory_is_separate_from_tavotto(monkeypatch, tmp_path):
+    monkeypatch.delenv("TAVOTTO_CONFIG_DIR", raising=False)
+    monkeypatch.delenv("TAVOTTO_DATA_DIR", raising=False)
+    monkeypatch.setattr(config.sys, "platform", "darwin")
+    monkeypatch.setattr(Path, "home", lambda: tmp_path)
+    expected = tmp_path / "Library" / "Application Support" / "PlotWorkbench"
+    assert config.config_dir() == expected
+    assert config.data_dir() == expected

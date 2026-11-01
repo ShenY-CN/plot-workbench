@@ -1,6 +1,6 @@
 # Plot Workbench v1 implementation
 
-Plot Workbench is a Windows desktop fork based on Tavotto v0.18.0, commit
+Plot Workbench is a desktop fork based on Tavotto v0.18.0, commit
 `71c72fdb48f28411bd76a021e5d78d2005e76c8a`. Product branding, application ID,
 configuration directories and GitHub repository are independent. The fork keeps
 the AGPL-3.0-only license and upstream attribution.
@@ -41,3 +41,16 @@ verifies uninstall before uploading the installer artifact.
 
 User projects, templates, source tables and exports live in the selected local
 data directory. They are not included in the public repository or installer.
+
+## macOS Apple Silicon beta
+
+The macOS beta reuses the Tauri shell, frozen sidecar, workerd and the isolated
+scientific runtime. The workbench runtime lock adds a native macOS arm64 target;
+the macOS workflow builds an unsigned DMG and tests its mounted app from a
+non-ASCII path. macOS 14 or later is required. Intel, notarization and automatic
+updates are outside this beta. Native window interaction and Finder/Gatekeeper
+behavior require manual macOS verification.
+
+The inherited `docs/support-matrix.json` describes upstream Tavotto release
+qualification; it is not evidence that this fork has shipped or qualified macOS
+artifacts. Plot Workbench macOS remains beta until its own CI and manual checks pass.

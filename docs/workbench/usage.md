@@ -39,3 +39,11 @@ Windows 配置保存在 `%APPDATA%\PlotWorkbench`，缓存和日志保存在 `%L
 ## 开源与来源
 
 本项目基于 [Tavotto v0.18.0](https://github.com/Tavotto/Tavotto)，保留其作者署名、AGPL-3.0-only 许可、安全边界和渲染协议。修改后的完整源码见 [Plot Workbench](https://github.com/pawafa666-eng/plot-workbench)，上游基准提交为 `71c72fdb48f28411bd76a021e5d78d2005e76c8a`。安装包包含 LICENSE 和 ATTRIBUTION.txt。
+
+## macOS Apple Silicon 测试版
+
+macOS 14 及以上的 Apple Silicon Mac 可使用 `Plot-Workbench-1.0.0-macOS-arm64.dmg`。打开磁盘映像，将 Plot Workbench 拖入「应用程序」。测试版未经 Apple Developer ID 签名和公证，首次打开可能被 Gatekeeper 阻止；确认来源后可在「系统设置 → 隐私与安全性」中允许打开。Intel Mac 暂不支持。
+
+应用内置 Python 和科学绘图依赖，无需安装系统 Python。配置和运行数据位于 `~/Library/Application Support/PlotWorkbench/`，与 Tavotto 分离；项目仍保存在用户选择的工作空间。遥测和自动更新检查保持关闭。
+
+开发者在 Apple Silicon macOS 上安装 Python 3.13、Node.js、pnpm、Rust 和 Xcode 命令行工具，并安装 `requirements.txt`、项目的 `[worker,workbench]` extras 与 PyInstaller 后，执行 `pnpm --dir web install --frozen-lockfile` 和 `python scripts/workbench_build.py`。DMG 和 SHA-256 文件输出至 `dist/`。macOS CI 挂载 DMG 并从含中文和空格的路径验证内置运行时与工作台 API；窗口交互、拖放、单实例及 Finder 首次打开仍需真机人工验收。

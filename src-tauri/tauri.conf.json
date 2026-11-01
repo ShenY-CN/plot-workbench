@@ -21,7 +21,8 @@
     "icon": [
       "../assets/workbench/128x128.png",
       "../assets/workbench/icon.png",
-      "../assets/workbench/icon.ico"
+      "../assets/workbench/icon.ico",
+      "../assets/workbench/icon.icns"
     ],
     "resources": {
       "../dist/Tavotto": "sidecar/Tavotto",
