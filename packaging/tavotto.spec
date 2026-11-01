@@ -234,7 +234,8 @@ print(f"[tavotto.spec] PDFium: {[os.path.basename(b[0]) for b in _pdfium_libs]}�
 # 没装它就在这里失败，不留到用户机器上。
 from PyInstaller.utils.hooks import collect_submodules, collect_data_files  # noqa: E402
 
-# Excel metadata/selection is read by the parent; dataframe creation stays in workers.
+# Workbench data selection and dtype inference run in the parent process.
+# Pandas and NumPy must therefore be frozen alongside the Excel readers.
 WORKBENCH_EXCEL_MODULES = []
 for _excel_package in ("openpyxl", "xlrd"):
     _excel_modules = collect_submodules(_excel_package)
@@ -267,14 +268,15 @@ a = Analysis(
         # 平台原生证书校验（见上；tlstrust 延后 import）
         *TRUSTSTORE_MODULES,
         *WORKBENCH_EXCEL_MODULES,
+        "pandas", "numpy",
     ],
     hookspath=[],
     runtime_hooks=[],
-    # 科学栈刻意排除（见文件头说明 2）：主进程不需要，打包机上装了也不要进包。
+    # Matplotlib and SciPy remain worker-only; Workbench needs pandas and numpy in the parent.
     # 内置 runtime 里的那一套走 datas，与这里互不影响。**PIL 不在这张表上**（U10 起）：
     # Pillow 是 RenderCore 的直接依赖（rasterio 解码位图素材、pikepdf 的硬依赖，ADR 0066），
     # 排除它的表现是导出位图面板时 ImportError——源码树上永远复现不了。
-    excludes=["matplotlib", "numpy", "scipy", "pandas", "tkinter",
+    excludes=["matplotlib", "scipy", "tkinter",
               "pytest", "setuptools", "pip", "pymupdf", "fitz"],
     noarchive=False,
 )
