@@ -228,19 +228,19 @@ export function SettingsDialog({ workbench = false }: { workbench?: boolean } = 
           className="mb-2 min-h-0 min-w-0 flex-1 overflow-y-auto overflow-x-hidden px-6 py-5 [scrollbar-gutter:stable]"
         >
           <h2 className="sr-only">{st(`section.${section}`)}</h2>
-          {workbench && <p className="mb-4 text-sm text-ink-2">部分设置适用于 Tavotto 图内编辑，工作台功能尚未全部接入。</p>}
+          {workbench && <p className="mb-4 text-sm text-ink-2">{st('workbench.notice')}</p>}
           <div
             data-content-mode={CONTENT_MODE[section]}
             style={CONTENT_MODE[section] === 'normal' ? { maxWidth: CONTENT_MAX_WIDTH } : undefined}
             className="flex flex-col gap-7"
           >
             {section === 'general' && <GeneralSettings close={close} />}
-            {section === 'project' && (workbench ? <p>工作台项目设置尚未接入此页面。请使用工作台中的项目和工作空间管理功能。</p> : <ProjectSettings />)}
+            {section === 'project' && (workbench ? <p>{st('workbench.projectUnavailable')}</p> : <ProjectSettings />)}
             {section === 'style' && <ProfilesSettings kind="style" />}
             {section === 'spec' && <ProfilesSettings kind="spec" />}
             {section === 'export' && <ExportSettings />}
             {section === 'ai' && <CodingAgentsSection />}
-            {section === 'packages' && (workbench ? <p>工作台项目的包管理尚未接入此页面。内置绘图环境随应用提供。</p> : <PackagesSettings />)}
+            {section === 'packages' && (workbench ? <p>{st('workbench.packagesUnavailable')}</p> : <PackagesSettings />)}
             {section === 'diagnostics' && <DiagnosticsSettings />}
             {section === 'about' && <PrivacyAboutSettings disableUpdates={workbench} />}
           </div>

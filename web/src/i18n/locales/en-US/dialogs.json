@@ -725,6 +725,11 @@
     "titlePaste": "The pasted figures are missing assets"
   },
   "settings": {
+    "workbench": {
+      "notice": "Some settings apply to the Tavotto figure editor; not all are connected to the workbench yet.",
+      "projectUnavailable": "Workbench project settings are not connected here yet. Manage projects and the workspace in the workbench.",
+      "packagesUnavailable": "Package management for workbench projects is not connected here yet. A plotting environment is bundled with the app."
+    },
     "about": {
       "check": {
         "bundled_runtime": "Bundled rendering environment",

@@ -1581,6 +1581,11 @@ export default interface Resources {
         "signatureNote": "更新包由官方签名，安装前会校验；校验不过不会安装。你的项目、排版与设置都不在应用的安装目录里，升级不受影响。",
         "sourceUpgrade": "源码检出，请执行",
         "upgrading": "升级中…"
+      },
+      "workbench": {
+        "notice": "部分设置适用于 Tavotto 图内编辑，工作台功能尚未全部接入。",
+        "packagesUnavailable": "工作台项目的包管理尚未接入此页面。内置绘图环境随应用提供。",
+        "projectUnavailable": "工作台项目设置尚未接入此页面。请使用工作台中的项目和工作空间管理功能。"
       }
     },
     "style": {

@@ -717,6 +717,11 @@
     "titlePaste": "粘贴的图缺少素材"
   },
   "settings": {
+    "workbench": {
+      "notice": "部分设置适用于 Tavotto 图内编辑，工作台功能尚未全部接入。",
+      "projectUnavailable": "工作台项目设置尚未接入此页面。请使用工作台中的项目和工作空间管理功能。",
+      "packagesUnavailable": "工作台项目的包管理尚未接入此页面。内置绘图环境随应用提供。"
+    },
     "about": {
       "check": {
         "bundled_runtime": "自带的渲染环境",
