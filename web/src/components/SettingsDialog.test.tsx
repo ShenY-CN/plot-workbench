@@ -221,3 +221,22 @@ describe('深链的返回：主对话框栈（审计 T35）', () => {
     expect(dialogCovered(useUiStore.getState().dialogStack, 'settings')).toBe(false)
   })
 })
+
+describe('工作台设置', () => {
+  it('保留全部设置分区，并避免在工作台操作不相关的项目环境', async () => {
+    useUiStore.setState({ settingsOpen: true, settingsSection: null })
+    host = document.createElement('div')
+    document.body.appendChild(host)
+    root = createRoot(host)
+    await act(async () => {
+      root.render(<TooltipProvider><SettingsDialog workbench /></TooltipProvider>)
+    })
+    expect(navButtons().map((button) => button.dataset.section)).toEqual(SECTIONS)
+    for (const section of ['project', 'packages']) {
+      await act(async () => {
+        nav().querySelector<HTMLButtonElement>(`[data-section="${section}"]`)!.click()
+      })
+      expect(document.querySelector('[data-settings-content]')?.textContent).toContain('尚未接入')
+    }
+  })
+})

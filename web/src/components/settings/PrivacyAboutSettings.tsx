@@ -33,7 +33,7 @@ const st = (key: string, values?: Record<string, unknown>) =>
  * （`DiagnosticsSettings.tsx`，ADR 0038）；内置包版本搬到了「包管理」。
  * 不许被折叠的：遥测开关本身、硬开关生效时的那句话。
  */
-export function PrivacyAboutSettings() {
+export function PrivacyAboutSettings({ disableUpdates = false }: { disableUpdates?: boolean } = {}) {
   useTranslation('dialogs')
   const statusVersion = useUpdateStore((s) => s.status?.current)
   // 更新接口失败时 status 取不到——那时恰恰最需要看到版本号（排错、报 bug）。
@@ -55,7 +55,7 @@ export function PrivacyAboutSettings() {
     <div className="contents">
       <ProductBlock version={version} />
       {/* 「更新」并进这一页（2026-09-30）：版本在上、检查更新紧随其后，再是隐私 */}
-      <UpdateSettings />
+      {!disableUpdates && <UpdateSettings />}
       <PrivacyBlock />
     </div>
   )
